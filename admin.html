@@ -124,11 +124,16 @@
     <section class="card">
       <h2>Crear código de renta</h2>
       <label>Plan</label>
-      <select id="plan">
-        <option value="week">Semana — 25 MXN</option>
-        <option value="month" selected>Mes — 50 MXN</option>
-        <option value="year">Año — 500 MXN</option>
+      <select id="plan" onchange="toggleCustom()">
+        <option value="hour">1 hora (prueba)</option>
+        <option value="week">1 semana — 25 MXN</option>
+        <option value="month" selected>1 mes — 50 MXN</option>
+        <option value="custom">Definir días…</option>
       </select>
+      <div id="customWrap" style="display:none">
+        <label>Días de renta</label>
+        <input id="customDays" type="number" min="1" max="3650" value="30" inputmode="numeric">
+      </div>
       <label>Nota (cliente, WhatsApp, etc.)</label>
       <input id="note" placeholder="Ej. Juan, pago transferencia">
       <div class="row" style="margin-top:14px">
@@ -230,7 +235,12 @@ async function refresh(){
 }
 
 function planName(p){
-  return ({week:"Semana", month:"Mes", year:"Año", trial:"Prueba"})[p] || p || "—";
+  return ({hour:"1 hora", week:"Semana", month:"Mes", year:"Año", custom:"Personalizado", trial:"Prueba"})[p] || p || "—";
+}
+
+function toggleCustom(){
+  const custom = document.getElementById("plan").value === "custom";
+  document.getElementById("customWrap").style.display = custom ? "block" : "none";
 }
 
 function fmt(date){
@@ -277,7 +287,7 @@ function render(){
       <td class="col-device">${d ? esc(d.device_name || d.model || "Dispositivo") + `<div class="muted">${esc(fmt(d.last_seen))}</div>` : '<span class="muted">Sin activar</span>'}</td>
       <td><div class="actions">
         <button class="small" onclick="copyText('${esc(l.code)}')">Copiar</button>
-        <button class="small" onclick="extend('${esc(l.code)}')">+30 días</button>
+        <button class="small" onclick="extend('${esc(l.code)}')">+ Días</button>
         <button class="small danger" onclick="revoke('${esc(l.code)}')">Revocar</button>
         <button class="small" onclick="resetDevice('${esc(l.code)}')">Liberar</button>
       </div></td>
@@ -287,9 +297,16 @@ function render(){
 
 async function createCode(){
   const plan = document.getElementById("plan").value;
+  const days = Number(document.getElementById("customDays").value);
+  if(plan === "custom" && (!Number.isFinite(days) || days < 1 || days > 3650)){
+    toast("Escribe los días (1 a 3650)", true);
+    return;
+  }
   const note = document.getElementById("note").value.trim();
   try {
-    const r = await api({action:"admin", admin_action:"create", plan, note});
+    const body = {action:"admin", admin_action:"create", plan, note};
+    if(plan === "custom") body.days = Math.floor(days);
+    const r = await api(body);
     const l = r.license;
     document.getElementById("newCode").textContent = l.code;
     document.getElementById("newExpiry").textContent = "Vence: " + fmt(l.expires_at);
