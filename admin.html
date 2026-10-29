@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GioTube Administración</title>
+<style>
+  :root{
+    --bg:#0b0f14; --card:#141a22; --card2:#1a222d; --line:#26303d;
+    --text:#e8eef6; --muted:#93a1b5; --orange:#ff7a18; --green:#2ecc71; --red:#ff5c5c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  header{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,15,20,.94);backdrop-filter:blur(8px);z-index:5}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.2px}
+  .brand span{color:var(--orange)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .grow{flex:1}
+  button{font:inherit;border:0;border-radius:10px;padding:10px 14px;cursor:pointer;background:var(--card2);color:var(--text);border:1px solid var(--line)}
+  button:hover{border-color:#3a4758}
+  button.primary{background:var(--orange);color:#161006;font-weight:700;border-color:transparent}
+  button.primary:hover{filter:brightness(1.08)}
+  button.danger{color:var(--red)}
+  button.small{padding:6px 9px;font-size:12px;border-radius:8px}
+  main{max-width:1240px;margin:0 auto;padding:22px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .stat .n{font-size:28px;font-weight:800}
+  .stat .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+  .grid{display:grid;grid-template-columns:380px 1fr;gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  h2{margin:0 0 14px;font-size:16px}
+  label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
+  input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0f151d;color:var(--text);font:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--orange)}
+  .codebox{margin-top:14px;padding:14px;border:1px dashed #3a4758;border-radius:12px;background:#0f151d;display:none}
+  .codebox.show{display:block}
+  .bigcode{font-size:24px;font-weight:800;color:var(--orange);letter-spacing:1px;word-break:break-all}
+  .muted{color:var(--muted);font-size:12px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  tr:hover td{background:#111821}
+  .pill{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+  .pill.ok{background:rgba(46,204,113,.14);color:var(--green)}
+  .pill.bad{background:rgba(255,92,92,.14);color:var(--red)}
+  .pill.warn{background:rgba(255,193,7,.14);color:#ffc107}
+  .mono{font-family:ui-monospace,Consolas,monospace}
+  .actions{display:flex;gap:6px;flex-wrap:wrap}
+  .empty{color:var(--muted);padding:18px 0;text-align:center}
+  .toast{position:fixed;right:18px;bottom:18px;max-width:420px;background:#1d2733;border:1px solid #344255;border-left:4px solid var(--orange);padding:13px 15px;border-radius:10px;display:none;z-index:20}
+  .toast.show{display:block}
+  .toast.err{border-left-color:var(--red)}
+  .overlay{position:fixed;inset:0;background:rgba(5,8,12,.88);display:flex;align-items:center;justify-content:center;padding:20px;z-index:30}
+  .overlay.hide{display:none}
+  .login{width:100%;max-width:430px}
+  .login h1{margin:0 0 6px;font-size:24px}
+  .login p{color:var(--muted);font-size:13px;line-height:1.5}
+  .login code{color:var(--orange)}
+  .search{max-width:280px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.stats{grid-template-columns:1fr 1fr}main{padding:14px}header{padding:14px}}
+</style>
+</head>
+<body>
+<div id="login" class="overlay">
+  <div class="card login">
+    <h1>GioTube <span style="color:var(--orange)">Administración</span></h1>
+    <p>Pega el <b>ADMIN_TOKEN</b> de <code>licencias/.env.local</code>. Se guarda solo en este navegador.</p>
+    <label>Token de administración</label>
+    <input id="tokenInput" type="password" autocomplete="off" placeholder="ADMIN_TOKEN">
+    <div class="row" style="margin-top:14px">
+      <button class="primary" onclick="login()">Entrar</button>
+      <span id="loginError" class="muted" style="color:var(--red)"></span>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="dot"></div>
+  <div class="brand">GioTube <span>Administración</span></div>
+  <div class="grow"></div>
+  <button onclick="refresh()">Actualizar</button>
+  <button onclick="logout()">Cambiar token</button>
+</header>
+
+<main>
+  <div class="stats">
+    <div class="stat"><div class="n" id="sTotal">—</div><div class="l">Licencias</div></div>
+    <div class="stat"><div class="n" id="sActive">—</div><div class="l">Activas</div></div>
+    <div class="stat"><div class="n" id="sExpired">—</div><div class="l">Vencidas</div></div>
+    <div class="stat"><div class="n" id="sDevices">—</div><div class="l">Dispositivos</div></div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Crear código de renta</h2>
+      <label>Plan</label>
+      <select id="plan">
+        <option value="week">Semana — 25 MXN</option>
+        <option value="month" selected>Mes — 50 MXN</option>
+        <option value="year">Año — 500 MXN</option>
+      </select>
+      <label>Nota (cliente, WhatsApp, etc.)</label>
+      <input id="note" placeholder="Ej. Juan, pago transferencia">
+      <div class="row" style="margin-top:14px">
+        <button class="primary" onclick="createCode()">Generar código</button>
+      </div>
+      <div id="codeBox" class="codebox">
+        <div class="muted">Código generado</div>
+        <div id="newCode" class="bigcode"></div>
+        <div id="newExpiry" class="muted" style="margin-top:6px"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="small" onclick="copyText(document.getElementById('newCode').textContent)">Copiar código</button>
+        </div>
+      </div>
+      <p class="muted" style="margin-top:14px;line-height:1.5">Mándale el código al cliente. Lo escribe en la pantalla de activación de la app.</p>
+    </section>
+
+    <section class="card">
+      <div class="row" style="justify-content:space-between">
+        <h2 style="margin:0">Licencias</h2>
+        <input id="search" class="search" placeholder="Buscar código o dispositivo" oninput="render()">
+      </div>
+      <div style="overflow:auto;margin-top:12px">
+        <table>
+          <thead><tr><th>Código</th><th>Plan</th><th>Vence</th><th>Estado</th><th>Dispositivo</th><th>Acciones</th></tr></thead>
+          <tbody id="rows"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = "https://hyjnhghjkjujigmcfrdy.supabase.co/functions/v1/license";
+let token = localStorage.getItem("giotube_admin_token") || "";
+let licenses = [];
+
+function toast(msg, isError=false){
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "toast show" + (isError ? " err" : "");
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => el.classList.remove("show"), 4200);
+}
+
+async function api(body){
+  const r = await fetch(API, {
+    method: "POST",
+    headers: {"Content-Type":"application/json", "x-admin-token": token},
+    body: JSON.stringify(body)
+  });
+  let data = {};
+  try { data = await r.json(); } catch(e){}
+  if(!r.ok) throw new Error(data.error || ("HTTP " + r.status));
+  return data;
+}
+
+async function login(){
+  const value = document.getElementById("tokenInput").value.trim();
+  if(!value) return;
+  token = value;
+  try {
+    await api({action:"admin", admin_action:"stats"});
+    localStorage.setItem("giotube_admin_token", token);
+    document.getElementById("login").classList.add("hide");
+    document.getElementById("loginError").textContent = "";
+    refresh();
+  } catch(e){
+    token = "";
+    document.getElementById("loginError").textContent = "Token incorrecto o sin conexión";
+  }
+}
+
+function logout(){
+  localStorage.removeItem("giotube_admin_token");
+  token = "";
+  licenses = [];
+  document.getElementById("login").classList.remove("hide");
+  document.getElementById("tokenInput").value = "";
+}
+
+async function refresh(){
+  if(!token) return;
+  try {
+    const [stats, list] = await Promise.all([
+      api({action:"admin", admin_action:"stats"}),
+      api({action:"admin", admin_action:"list"})
+    ]);
+    document.getElementById("sTotal").textContent = stats.licenses ?? "—";
+    document.getElementById("sActive").textContent = stats.active ?? "—";
+    document.getElementById("sExpired").textContent = stats.expired ?? "—";
+    document.getElementById("sDevices").textContent = stats.devices ?? "—";
+    licenses = list.licenses || [];
+    render();
+  } catch(e){
+    toast(e.message, true);
+  }
+}
+
+function planName(p){
+  return ({week:"Semana", month:"Mes", year:"Año", trial:"Prueba"})[p] || p || "—";
+}
+
+function fmt(date){
+  if(!date) return "—";
+  const d = new Date(date);
+  return isNaN(d) ? "—" : d.toLocaleString("es-MX", {dateStyle:"short", timeStyle:"short"});
+}
+
+function stateOf(l){
+  if(l.status === "revoked") return ["Cancelada", "bad"];
+  if(new Date(l.expires_at) < new Date()) return ["Vencida", "warn"];
+  return ["Activa", "ok"];
+}
+
+function activeDevice(l){
+  const list = l.devices || [];
+  return list.find(d => d.status === "active") || list[0] || null;
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function render(){
+  const q = (document.getElementById("search").value || "").toLowerCase().trim();
+  const rows = licenses.filter(l => {
+    if(!q) return true;
+    const d = activeDevice(l);
+    return (l.code || "").toLowerCase().includes(q) || (d?.device_name || "").toLowerCase().includes(q);
+  });
+  const body = document.getElementById("rows");
+  if(!rows.length){
+    body.innerHTML = '<tr><td colspan="6" class="empty">No hay licencias que coincidan.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(l => {
+    const [state, cls] = stateOf(l);
+    const d = activeDevice(l);
+    return `<tr>
+      <td class="mono"><b>${esc(l.code)}</b></td>
+      <td>${esc(planName(l.plan))}</td>
+      <td>${esc(fmt(l.expires_at))}</td>
+      <td><span class="pill ${cls}">${state}</span></td>
+      <td>${d ? esc(d.device_name || d.model || "Dispositivo") + `<div class="muted">${esc(fmt(d.last_seen))}</div>` : '<span class="muted">Sin activar</span>'}</td>
+      <td><div class="actions">
+        <button class="small" onclick="copyText('${esc(l.code)}')">Copiar</button>
+        <button class="small" onclick="extend('${esc(l.code)}')">+30 días</button>
+        <button class="small danger" onclick="revoke('${esc(l.code)}')">Revocar</button>
+        <button class="small" onclick="resetDevice('${esc(l.code)}')">Liberar</button>
+      </div></td>
+    </tr>`;
+  }).join("");
+}
+
+async function createCode(){
+  const plan = document.getElementById("plan").value;
+  const note = document.getElementById("note").value.trim();
+  try {
+    const r = await api({action:"admin", admin_action:"create", plan, note});
+    const l = r.license;
+    document.getElementById("newCode").textContent = l.code;
+    document.getElementById("newExpiry").textContent = "Vence: " + fmt(l.expires_at);
+    document.getElementById("codeBox").classList.add("show");
+    document.getElementById("note").value = "";
+    toast("Código creado");
+    refresh();
+  } catch(e){ toast(e.message, true); }
+}
+
+async function extend(code){
+  const days = prompt("¿Cuántos días quieres extender?", "30");
+  if(!days) return;
+  try {
+    await api({action:"admin", admin_action:"extend", code, days: Number(days)});
+    toast("Licencia extendida");
+    refresh();
+  } catch(e){ toast(e.message, true); }
+}
+
+async function revoke(code){
+  if(!confirm("¿Revocar " + code + "? La app se bloqueará.")) return;
+  try {
+    await api({action:"admin", admin_action:"revoke", code});
+    toast("Licencia revocada");
+    refresh();
+  } catch(e){ toast(e.message, true); }
+}
+
+async function resetDevice(code){
+  if(!confirm("¿Liberar el dispositivo de " + code + "? Podrás activarla en otra tele.")) return;
+  try {
+    await api({action:"admin", admin_action:"reset", code});
+    toast("Dispositivo liberado");
+    refresh();
+  } catch(e){ toast(e.message, true); }
+}
+
+async function copyText(text){
+  try { await navigator.clipboard.writeText(text); toast("Copiado: " + text); }
+  catch(e){
+    const t = document.createElement("textarea");
+    t.value = text; document.body.appendChild(t); t.select();
+    document.execCommand("copy"); t.remove(); toast("Copiado: " + text);
+  }
+}
+
+if(token){
+  document.getElementById("login").classList.add("hide");
+  refresh();
+}
+setInterval(() => { if(token) refresh(); }, 60000);
+</script>
+</body>
+</html>
