@@ -10,6 +10,7 @@
     --text:#e8eef6; --muted:#93a1b5; --orange:#ff7a18; --green:#2ecc71; --red:#ff5c5c;
   }
   *{box-sizing:border-box}
+  html,body{max-width:100%;overflow-x:hidden}
   body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
   header{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,15,20,.94);backdrop-filter:blur(8px);z-index:5}
   .brand{font-weight:800;font-size:20px;letter-spacing:.2px}
@@ -22,13 +23,13 @@
   button.primary:hover{filter:brightness(1.08)}
   button.danger{color:var(--red)}
   button.small{padding:6px 9px;font-size:12px;border-radius:8px}
-  main{max-width:1240px;margin:0 auto;padding:22px}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  main{width:100%;max-width:1240px;margin:0 auto;padding:22px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;width:100%}
   .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
   .stat .n{font-size:28px;font-weight:800}
   .stat .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.8px}
-  .grid{display:grid;grid-template-columns:380px 1fr;gap:18px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .grid{display:grid;grid-template-columns:380px 1fr;gap:18px;width:100%}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;max-width:100%;overflow:hidden}
   h2{margin:0 0 14px;font-size:16px}
   label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
   input,select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:#0f151d;color:var(--text);font:inherit}
@@ -59,8 +60,28 @@
   .login p{color:var(--muted);font-size:13px;line-height:1.5}
   .login code{color:var(--orange)}
   .search{max-width:280px}
-  @media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:520px){.stats{grid-template-columns:1fr 1fr}main{padding:14px}header{padding:14px}}
+  .table-wrap{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+  .table-wrap table{min-width:760px}
+  .card,.grid{min-width:0}
+  main{overflow-x:hidden}
+  @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){
+    .stats{grid-template-columns:1fr;gap:8px}
+    .stat{padding:12px}
+    .stat .n{font-size:23px}
+    main{padding:12px;max-width:100vw}
+    header{padding:12px;gap:8px;flex-wrap:wrap}
+    header .grow{display:none}
+    .brand{font-size:17px;flex:1 1 100%}
+    header button{padding:8px 10px;font-size:12px;flex:1 1 100%}
+    .grid{display:block}
+    .card{padding:14px;width:100%}
+    .row{flex-wrap:wrap}
+    .row > *{min-width:0}
+    .search{max-width:100%;width:100%;flex:1 1 100%}
+    .col-expiry,.col-device{display:none}
+    .table-wrap table{min-width:360px}
+  }
 </style>
 </head>
 <body>
@@ -123,9 +144,9 @@
         <h2 style="margin:0">Licencias</h2>
         <input id="search" class="search" placeholder="Buscar código o dispositivo" oninput="render()">
       </div>
-      <div style="overflow:auto;margin-top:12px">
+      <div class="table-wrap" style="margin-top:12px">
         <table>
-          <thead><tr><th>Código</th><th>Plan</th><th>Vence</th><th>Estado</th><th>Dispositivo</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Código</th><th>Plan</th><th class="col-expiry">Vence</th><th>Estado</th><th class="col-device">Dispositivo</th><th>Acciones</th></tr></thead>
           <tbody id="rows"><tr><td colspan="6" class="empty">Cargando…</td></tr></tbody>
         </table>
       </div>
@@ -245,9 +266,9 @@ function render(){
     return `<tr>
       <td class="mono"><b>${esc(l.code)}</b></td>
       <td>${esc(planName(l.plan))}</td>
-      <td>${esc(fmt(l.expires_at))}</td>
+      <td class="col-expiry">${esc(fmt(l.expires_at))}</td>
       <td><span class="pill ${cls}">${state}</span></td>
-      <td>${d ? esc(d.device_name || d.model || "Dispositivo") + `<div class="muted">${esc(fmt(d.last_seen))}</div>` : '<span class="muted">Sin activar</span>'}</td>
+      <td class="col-device">${d ? esc(d.device_name || d.model || "Dispositivo") + `<div class="muted">${esc(fmt(d.last_seen))}</div>` : '<span class="muted">Sin activar</span>'}</td>
       <td><div class="actions">
         <button class="small" onclick="copyText('${esc(l.code)}')">Copiar</button>
         <button class="small" onclick="extend('${esc(l.code)}')">+30 días</button>
