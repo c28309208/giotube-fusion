@@ -66,7 +66,8 @@
   main{overflow-x:hidden}
   @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:520px){
-    .stats{grid-template-columns:1fr;gap:8px}
+    html,body,main{width:100vw;max-width:100vw}
+    .stats{grid-template-columns:1fr;gap:8px;width:100%;max-width:100%}
     .stat{padding:12px}
     .stat .n{font-size:23px}
     main{padding:12px;max-width:100vw}
@@ -80,7 +81,12 @@
     .row > *{min-width:0}
     .search{max-width:100%;width:100%;flex:1 1 100%}
     .col-expiry,.col-device{display:none}
-    .table-wrap table{min-width:360px}
+    .table-wrap{width:100%;max-width:100%}
+    .table-wrap table{min-width:0;width:100%;table-layout:fixed}
+    .table-wrap th,.table-wrap td{padding:7px 3px;font-size:11px;word-break:break-word}
+    .table-wrap th:last-child,.table-wrap td:last-child{width:36%}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:100%}
+    .actions button{padding:5px 3px;font-size:10px}
   }
 </style>
 </head>
