@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GioTube Fusion — Videos y música en una sola app</title>
+<meta name="description" content="GioTube Fusion: YouTube sin anuncios y tu música en una sola app para Android TV y celular. Prueba 1 hora y activa por WhatsApp.">
+<meta name="theme-color" content="#0A0A0F">
+<style>
+  :root{
+    --ink:#0A0A0F; --panel:#15131B; --panel2:#1D1924; --line:#2E2736;
+    --orange:#FF7A18; --amber:#FFB020; --text:#F5F2EE; --muted:#BDB4AC;
+    --glow:0 0 40px rgba(255,122,24,.28);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ink);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  header{position:sticky;top:0;z-index:20;background:rgba(10,10,15,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:22px;height:70px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:20px;letter-spacing:-.2px}
+  .brand b{color:var(--orange)}
+  .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--orange),var(--amber));display:grid;place-items:center;box-shadow:var(--glow)}
+  .logo svg{width:18px;height:18px}
+  .navlinks{display:flex;gap:22px;margin-left:auto;font-size:14px;color:var(--muted)}
+  .navlinks a{text-decoration:none}
+  .navlinks a:hover{color:var(--text)}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:800;font-size:14px;border:1px solid transparent;cursor:pointer;transition:.2s}
+  .btn-primary{background:var(--orange);color:#160D05;box-shadow:0 8px 26px rgba(255,122,24,.24)}
+  .btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .btn-ghost{border-color:var(--line);background:rgba(255,255,255,.03);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+  .hero{position:relative;padding:72px 0 40px;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.35;pointer-events:none}
+  .orb.a{width:480px;height:480px;background:var(--orange);left:-160px;top:-140px}
+  .orb.b{width:380px;height:380px;background:var(--amber);right:-120px;top:120px;opacity:.18}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:42px;align-items:center;position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(255,122,24,.35);border-radius:999px;color:var(--orange);font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;background:rgba(255,122,24,.07)}
+  h1{font-size:clamp(38px,5.4vw,64px);line-height:1.03;letter-spacing:-1.5px;margin:18px 0 16px}
+  h1 em{font-style:normal;color:var(--orange)}
+  .lead{color:var(--muted);font-size:clamp(15px,1.8vw,18px);line-height:1.6;max-width:520px}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .micro{color:#7E7480;font-size:12px;margin-top:12px}
+  .tv{position:relative;background:linear-gradient(160deg,#241E2C,#0F0C14);border:1px solid #3A3044;border-radius:22px;padding:12px;box-shadow:0 40px 80px rgba(0,0,0,.55), var(--glow);transform:perspective(1200px) rotateY(-7deg) rotateX(2deg);animation:float 7s ease-in-out infinite}
+  .tv-screen{background:#0B0810;border-radius:14px;overflow:hidden;aspect-ratio:16/9;border:1px solid rgba(255,255,255,.06)}
+  .tv-top{display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(180deg,rgba(255,122,24,.16),transparent)}
+  .tv-logo{width:18px;height:18px;border-radius:5px;background:var(--orange);display:grid;place-items:center}
+  .tv-logo svg{width:9px;height:9px}
+  .tv-top span{font-size:8px;color:#D8D0CA;margin-right:6px}
+  .tv-top span:first-of-type{color:var(--orange);font-weight:800}
+  .tv-hero{margin:8px;border-radius:9px;background:linear-gradient(120deg,#3A1B08,#1A0F08 70%);padding:12px;display:flex;gap:10px;align-items:center;min-height:92px}
+  .play-big{width:34px;height:34px;border-radius:50%;background:var(--orange);display:grid;place-items:center;flex:none;box-shadow:0 0 20px rgba(255,122,24,.5)}
+  .play-big svg{width:14px;height:14px}
+  .tv-lines b{display:block;font-size:11px;margin-bottom:4px}
+  .tv-lines small{display:block;color:#A99DA8;font-size:8px;line-height:1.5}
+  .tv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 8px 10px}
+  .thumb{aspect-ratio:16/10;border-radius:6px;background:linear-gradient(135deg,#4A220B,#211018);position:relative;overflow:hidden}
+  .thumb:after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:linear-gradient(90deg,var(--orange),var(--amber))}
+  .phone{position:absolute;right:-6px;bottom:-38px;width:168px;border:6px solid #2B2433;border-radius:26px;background:#0C0910;box-shadow:0 30px 60px rgba(0,0,0,.6), var(--glow);animation:float 6s ease-in-out infinite reverse;padding:8px}
+  .phone-screen{border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#17111F,#0C0910);padding:12px 10px}
+  .phone-notch{width:42px;height:4px;border-radius:3px;background:#3C3246;margin:0 auto 10px}
+  .album{aspect-ratio:1;border-radius:12px;background:radial-gradient(circle at 30% 25%,#FFB020,#FF7A18 45%,#3A1608 100%);position:relative;box-shadow:0 10px 30px rgba(255,122,24,.3)}
+  .album:after{content:"";position:absolute;inset:35%;border-radius:50%;background:#0C0910;border:5px solid rgba(255,255,255,.18)}
+  .phone-title{font-size:9px;font-weight:800;margin:10px 0 2px}
+  .phone-sub{font-size:7px;color:#9E929F;margin-bottom:8px}
+  .eq{display:flex;align-items:flex-end;gap:2px;height:16px;margin:8px 0}
+  .eq i{display:block;width:3px;background:var(--orange);border-radius:2px;animation:eq 1s ease-in-out infinite}
+  .eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}.eq i:nth-child(4){animation-delay:.45s}.eq i:nth-child(5){animation-delay:.6s}
+  .phone-bar{height:3px;border-radius:2px;background:#2A2232;position:relative;margin-top:4px}
+  .phone-bar:after{content:"";position:absolute;left:0;top:0;bottom:0;width:62%;border-radius:2px;background:linear-gradient(90deg,var(--orange),var(--amber))}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:34px 0 0}
+  .stat{border:1px solid var(--line);background:rgba(21,19,27,.7);border-radius:14px;padding:15px}
+  .stat b{display:block;font-size:24px;color:var(--orange)}
+  .stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+  section{padding:70px 0}
+  .section-head{max-width:680px;margin-bottom:28px}
+  .kicker{color:var(--orange);font-size:12px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase}
+  h2{font-size:clamp(28px,3.8vw,42px);letter-spacing:-.8px;line-height:1.1;margin:8px 0 10px}
+  .section-head p{color:var(--muted);line-height:1.6;margin:0}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .tab{border:1px solid var(--line);background:transparent;color:var(--muted);padding:10px 15px;border-radius:999px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+  .tab.active{background:var(--orange);border-color:var(--orange);color:#170D05}
+  .demo{border:1px solid var(--line);border-radius:20px;background:linear-gradient(160deg,#18131F,#0D0A11);padding:22px;min-height:300px;position:relative;overflow:hidden}
+  .demo:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:var(--orange);filter:blur(100px);opacity:.12;right:-100px;top:-120px;pointer-events:none}
+  .pane{display:none;animation:fade .35s ease}
+  .pane.active{display:block}
+  .pane h3{margin:0 0 4px;font-size:18px}
+  .pane p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.6}
+  .mock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .mock-card{border:1px solid var(--line);border-radius:12px;background:#120E18;padding:10px}
+  .mock-thumb{aspect-ratio:16/10;border-radius:8px;background:linear-gradient(135deg,#48210C,#1B1018);margin-bottom:8px;position:relative}
+  .mock-thumb:after{content:"";position:absolute;left:9px;bottom:8px;width:34%;height:4px;border-radius:2px;background:var(--orange)}
+  .mock-card b{font-size:11px;display:block}
+  .mock-card small{font-size:9px;color:#978B99}
+  .music-list{display:flex;flex-direction:column;gap:8px}
+  .track{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:10px;background:#120E18}
+  .cover{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--amber),var(--orange));flex:none}
+  .track b{font-size:11px;display:block}.track small{font-size:9px;color:#978B99}
+  .track .time{margin-left:auto;font-size:10px;color:var(--orange)}
+  .downloads{display:flex;flex-direction:column;gap:10px}
+  .dl{border:1px solid var(--line);border-radius:10px;padding:10px;background:#120E18}
+  .dl b{font-size:11px}.dl small{font-size:9px;color:#978B99;display:block;margin:3px 0 7px}
+  .bar{height:5px;border-radius:3px;background:#2A2232;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--amber))}
+  .license{margin-top:6px;border:1px solid rgba(255,122,24,.35);border-radius:14px;padding:16px;background:linear-gradient(135deg,rgba(255,122,24,.12),rgba(255,176,32,.03))}
+  .license .pill{display:inline-block;background:rgba(255,122,24,.15);color:var(--orange);font-size:10px;font-weight:800;padding:5px 9px;border-radius:999px;letter-spacing:.5px}
+  .license h3{margin:10px 0 4px}.license p{font-size:12px;margin:0 0 12px}
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .feature{border:1px solid var(--line);border-radius:16px;padding:20px;background:rgba(21,19,27,.72);transition:.25s}
+  .feature:hover{border-color:rgba(255,122,24,.55);transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+  .ficon{width:38px;height:38px;border-radius:11px;background:rgba(255,122,24,.12);display:grid;place-items:center;color:var(--orange);margin-bottom:13px}
+  .ficon svg{width:19px;height:19px}
+  .feature h3{margin:0 0 6px;font-size:16px}.feature p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+  .plans{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .plan{border:1px solid var(--line);border-radius:16px;padding:18px;background:rgba(21,19,27,.75);cursor:pointer;transition:.2s;position:relative}
+  .plan:hover{border-color:rgba(255,122,24,.55)}
+  .plan.selected{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange),0 18px 40px rgba(255,122,24,.12)}
+  .plan .tag{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--orange);font-weight:900}
+  .plan h3{margin:8px 0 4px;font-size:18px}
+  .plan .price{font-size:24px;font-weight:900;margin:8px 0 4px}
+  .plan .price small{font-size:11px;color:var(--muted);font-weight:500}
+  .plan p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+  .plans-note{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:14px;background:#120E18}
+  .plans-note b{color:var(--orange)}
+  .faq{display:flex;flex-direction:column;gap:9px;max-width:820px}
+  details{border:1px solid var(--line);border-radius:12px;background:rgba(21,19,27,.7);padding:0 16px}
+  summary{cursor:pointer;padding:16px 0;font-weight:700;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary:after{content:"+";color:var(--orange);font-size:20px;line-height:1}
+  details[open] summary:after{content:"−"}
+  details p{color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 16px}
+  .final{border:1px solid rgba(255,122,24,.35);border-radius:24px;padding:42px;background:radial-gradient(600px 260px at 50% 0,rgba(255,122,24,.18),transparent),#120E18;text-align:center;position:relative;overflow:hidden}
+  .final h2{max-width:720px;margin:0 auto 12px}
+  .final p{color:var(--muted);max-width:620px;margin:0 auto 24px;line-height:1.6}
+  .final .hero-actions{justify-content:center}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:#7E7480;font-size:12px}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+  .no-js .reveal{opacity:1;transform:none}
+  .reveal.in{opacity:1;transform:none}
+  @keyframes float{0%,100%{transform:perspective(1200px) rotateY(-7deg) rotateX(2deg) translateY(0)}50%{transform:perspective(1200px) rotateY(-7deg) rotateX(2deg) translateY(-9px)}}
+  @keyframes eq{0%,100%{height:5px}50%{height:16px}}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  @media(max-width:980px){
+    .hero-grid{grid-template-columns:1fr}.hero-art{margin-top:20px;max-width:600px;margin-left:auto;margin-right:auto}
+    .tv{transform:none;animation:none}.phone{display:none}.navlinks{display:none}
+    .features{grid-template-columns:1fr 1fr}.plans{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:620px){
+    .hero{padding-top:44px}.wrap{padding:0 16px}
+    .features{grid-template-columns:1fr}.plans{grid-template-columns:1fr}
+    .mock-grid{grid-template-columns:1fr 1fr}
+    .final{padding:28px 18px}
+    .nav .btn{padding:10px 12px;font-size:12px}
+    section{padding:52px 0}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#inicio">
+        <span class="logo"><svg viewBox="0 0 24 24" fill="none"><path d="M8 5.5v13l11-6.5-11-6.5Z" fill="#160D05"/></svg></span>
+        <span>Gio<b>Tube</b></span>
+      </a>
+      <div class="navlinks">
+        <a href="#demo">La app</a>
+        <a href="#funciones">Funciones</a>
+        <a href="#planes">Renta</a>
+        <a href="#faq">Dudas</a>
+      </div>
+      <a class="btn btn-primary" href="https://tinyurl.com/giotubeapp">Descargar</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+  <div class="orb a"></div><div class="orb b"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Android TV · celular · una sola app</span>
+        <h1>Todo YouTube y tu música.<br><em>En una sola app.</em></h1>
+        <p class="lead">GioTube Fusion junta videos sin anuncios, tu biblioteca de música, descargas y renta por dispositivo. Instalas, pruebas 1 hora y activas por WhatsApp.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://tinyurl.com/giotubeapp">Descargar GioTube Fusion</a>
+          <a class="btn btn-ghost" href="https://wa.me/525514153886?text=Hola%2C%20quiero%20informaci%C3%B3n%20de%20GioTube%20Fusion">Pedir informes</a>
+        </div>
+        <div class="micro">Prueba gratis de 1 hora · Un dispositivo por código · Android 5 o superior</div>
+        <div class="stats">
+          <div class="stat"><b>2 en 1</b><span>Videos + música</span></div>
+          <div class="stat"><b>1 h</b><span>De prueba</span></div>
+          <div class="stat"><b>TV</b><span>Y celular</span></div>
+          <div class="stat"><b>0</b><span>Cuentas Google</span></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="tv">
+          <div class="tv-screen">
+            <div class="tv-top">
+              <span class="tv-logo"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5Z" fill="#160D05"/></svg></span>
+              <span>Inicio</span><span>Música</span><span>Ajustes</span>
+            </div>
+            <div class="tv-hero">
+              <span class="play-big"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5Z" fill="#160D05"/></svg></span>
+              <div class="tv-lines"><b>Tu música, sin anuncios</b><small>Biblioteca · descargas · favoritos<br>Control total desde el control remoto</small></div>
+            </div>
+            <div class="tv-grid"><div class="thumb"></div><div class="thumb"></div><div class="thumb"></div></div>
+          </div>
+        </div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="album"></div>
+            <div class="phone-title">Neon Nights</div>
+            <div class="phone-sub">GioTube Music</div>
+            <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="phone-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">Así se siente</div>
+      <h2>Una app, dos mundos.</h2>
+      <p>Toca cada pestaña para ver lo que hace GioTube Fusion. Todo con el mismo naranja neón, en tele y celular.</p>
+    </div>
+    <div class="tabs reveal">
+      <button class="tab active" data-tab="videos">Videos</button>
+      <button class="tab" data-tab="musica">Música</button>
+      <button class="tab" data-tab="descargas">Descargas</button>
+      <button class="tab" data-tab="renta">Renta</button>
+    </div>
+    <div class="demo reveal">
+      <div class="pane active" id="pane-videos">
+        <h3>Videos sin anuncios</h3>
+        <p>Busca, reproduce y sigue con el siguiente. Calidad, velocidad, subtítulos y “solo audio”.</p>
+        <div class="mock-grid">
+          <div class="mock-card"><div class="mock-thumb"></div><b>Trending ahora</b><small>YouTube · sin anuncios</small></div>
+          <div class="mock-card"><div class="mock-thumb"></div><b>Continúa donde ibas</b><small>Tu historial local</small></div>
+          <div class="mock-card"><div class="mock-thumb"></div><b>Más del canal</b><small>Descubre algo nuevo</small></div>
+        </div>
+      </div>
+      <div class="pane" id="pane-musica">
+        <h3>Tu música, ordenada</h3>
+        <p>Biblioteca, favoritos, playlists y descargas. El reproductor tiene ecualizador y modo solo audio.</p>
+        <div class="music-list">
+          <div class="track"><span class="cover"></span><div><b>Neon Nights</b><small>GioTube Music</small></div><span class="time">3:42</span></div>
+          <div class="track"><span class="cover"></span><div><b>Ruta 54</b><small>Playlist de noche</small></div><span class="time">4:08</span></div>
+          <div class="track"><span class="cover"></span><div><b>Sin señal</b><small>Descargada</small></div><span class="time">2:57</span></div>
+        </div>
+      </div>
+      <div class="pane" id="pane-descargas">
+        <h3>Descargas que sí quedan</h3>
+        <p>Baja el audio desde cualquier video y escúchalo sin internet. Aquí ves el progreso y puedes reintentar.</p>
+        <div class="downloads">
+          <div class="dl"><b>Neon Nights</b><small>Audio · listo para escuchar sin conexión</small><div class="bar"><i style="width:100%"></i></div></div>
+          <div class="dl"><b>Ruta 54</b><small>Descargando · 68%</small><div class="bar"><i style="width:68%"></i></div></div>
+          <div class="dl"><b>Sin señal</b><small>En cola</small><div class="bar"><i style="width:12%"></i></div></div>
+        </div>
+      </div>
+      <div class="pane" id="pane-renta">
+        <h3>Renta clara, sin sorpresas</h3>
+        <p>Prueba 1 hora. Después eliges semana, mes o los días que necesites. Un código, un dispositivo.</p>
+        <div class="license">
+          <span class="pill">RENTA ACTIVA</span>
+          <h3>Vence en 7 días</h3>
+          <p>Tu código está activo en esta tele. Si cambias de equipo, puedes moverlo.</p>
+          <a class="btn btn-primary" href="https://wa.me/525514153886?text=Hola%2C%20quiero%20renovar%20mi%20renta%20de%20GioTube%20Fusion">Renovar por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="funciones">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">Lo que incluye</div>
+      <h2>Hecho para usarse, no para sufrirse.</h2>
+      <p>Sin cuentas, sin anuncios y con la renta integrada. Lo esencial para ver y escuchar todos los días.</p>
+    </div>
+    <div class="features">
+      <div class="feature reveal"><div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5.5v13l11-6.5-11-6.5Z"/></svg></div><h3>Videos sin anuncios</h3><p>Reproduce YouTube directo, con historial y “continuar donde lo dejaste”.</p></div>
+      <div class="feature reveal"><div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg></div><h3>Música y descargas</h3><p>Biblioteca, playlists y audio descargado para escuchar sin internet.</p></div>
+      <div class="feature reveal"><div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg></div><h3>Descargas internas</h3><p>Los archivos se quedan en la app: no desaparecen al cerrar o limpiar la tele.</p></div>
+      <div class="feature reveal"><div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><h3>Renta por dispositivo</h3><p>Prueba 1 hora y activa con un código. Un solo equipo a la vez, transferible.</p></div>
+      <div class="feature reveal"><div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg></div><h3>Android TV y celular</h3><p>La misma app se adapta al control remoto y a la pantalla táctil.</p></div>
+      <div class="feature reveal"><div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><path d="M5 8h14"/><path d="M5 16h14"/></svg></div><h3>Naranja neón</h3><p>Interfaz oscura con acentos naranja para que se vea bien de noche.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="planes">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">Renta</div>
+      <h2>Elige cuánto tiempo.</h2>
+      <p>Toca un plan para pedirlo por WhatsApp. La prueba de 1 hora se activa dentro de la app.</p>
+    </div>
+    <div class="plans reveal">
+      <div class="plan selected" data-plan="Prueba de 1 hora"><div class="tag">Para probar</div><h3>1 hora</h3><div class="price">Gratis</div><p>Actívala dentro de la app y conoce todo.</p></div>
+      <div class="plan" data-plan="1 semana"><div class="tag">Semana</div><h3>7 días</h3><div class="price">$25 <small>MXN</small></div><p>Ideal para una semana de películas o música.</p></div>
+      <div class="plan" data-plan="1 mes"><div class="tag">Mes</div><h3>30 días</h3><div class="price">$50 <small>MXN</small></div><p>El plan completo para todos los días.</p></div>
+      <div class="plan" data-plan="días personalizados"><div class="tag">A tu medida</div><h3>Personalizado</h3><div class="price">Tú decides</div><p>Dinos cuántos días necesitas y te pasamos el precio.</p></div>
+    </div>
+    <div class="plans-note reveal">
+      <div>Plan elegido: <b id="planName">Prueba de 1 hora</b></div>
+      <a class="btn btn-primary" id="planWhats" href="https://wa.me/525514153886?text=Hola%2C%20quiero%20la%20prueba%20de%201%20hora%20de%20GioTube%20Fusion">Pedir por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">Dudas rápidas</div>
+      <h2>Lo que suelen preguntar.</h2>
+    </div>
+    <div class="faq reveal">
+      <details><summary>¿Cuánto dura la prueba?</summary><p>1 hora por dispositivo. Después puedes activar una semana, un mes o los días que necesites.</p></details>
+      <details><summary>¿Se puede usar en tele y celular?</summary><p>Sí, pero un solo dispositivo activo por código. Si cambias de equipo, usas “Mover mi renta” o te ayudamos desde el panel.</p></details>
+      <details><summary>¿Necesito cuenta de Google?</summary><p>No. La app no se conecta a cuentas; si quieres tus suscripciones, se importan desde Takeout o NewPipe.</p></details>
+      <details><summary>¿Cómo la instalo en Android TV?</summary><p>Con Downloader: pestaña URL y escribe <b>giotubeapp</b>. También puedes pasarla desde el celular con Send Files to TV.</p></details>
+      <details><summary>¿Cómo renuevo?</summary><p>Desde la app, en Ajustes → Renta → Renovar por WhatsApp, o desde el aviso cuando quedan pocos días.</p></details>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="final reveal">
+      <div class="kicker">GioTube Fusion</div>
+      <h2>Tu tele y tu música, con un solo naranja.</h2>
+      <p>Descarga la app, prueba 1 hora y activa cuando estés listo. Sin cuentas, sin anuncios y con soporte por WhatsApp.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://tinyurl.com/giotubeapp">Descargar ahora</a>
+        <a class="btn btn-ghost" href="https://wa.me/525514153886?text=Hola%2C%20quiero%20activar%20GioTube%20Fusion">Activar por WhatsApp</a>
+      </div>
+      <div class="micro">Android TV · Fire TV · celular Android · versión 1.0.16</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>GioTube Fusion · Videos y música en una sola app.</div>
+    <div>WhatsApp 55 1415 3886 · <a href="https://tinyurl.com/giotubeapp">giotubeapp</a></div>
+  </div>
+</footer>
+
+<script>
+  // Pestañas
+  const tabs = document.querySelectorAll('.tab');
+  const panes = document.querySelectorAll('.pane');
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    panes.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+  }));
+
+  // Planes
+  const plans = document.querySelectorAll('.plan');
+  const planName = document.getElementById('planName');
+  const planWhats = document.getElementById('planWhats');
+  plans.forEach(p => p.addEventListener('click', () => {
+    plans.forEach(x => x.classList.remove('selected'));
+    p.classList.add('selected');
+    const plan = p.dataset.plan;
+    planName.textContent = plan;
+    planWhats.href = 'https://wa.me/525514153886?text=' + encodeURIComponent('Hola, quiero el plan ' + plan + ' de GioTube Fusion.');
+  }));
+
+  // Aparición al hacer scroll
+  document.documentElement.classList.remove("no-js");
+  const showAll = () => document.querySelectorAll(".reveal:not(.in)").forEach(el => el.classList.add("in"));
+  setTimeout(showAll, 1600);
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
