@@ -271,7 +271,9 @@ function render(){
   const rows = licenses.filter(l => {
     if(!q) return true;
     const d = activeDevice(l);
-    return (l.code || "").toLowerCase().includes(q) || (d?.device_name || "").toLowerCase().includes(q);
+    return (l.code || "").toLowerCase().includes(q) ||
+      (d?.device_name || "").toLowerCase().includes(q) ||
+      (d?.device_hash || "").toLowerCase().includes(q);
   });
   const body = document.getElementById("rows");
   if(!rows.length){
@@ -281,8 +283,9 @@ function render(){
   body.innerHTML = rows.map(l => {
     const [state, cls] = stateOf(l);
     const d = activeDevice(l);
+    const shortId = d?.device_hash ? d.device_hash.slice(0, 8).toUpperCase() : "";
     return `<tr>
-      <td class="mono"><b>${esc(l.code)}</b></td>
+      <td class="mono"><b>${esc(l.code)}</b>${shortId ? `<div class="muted">ID ${esc(shortId)}</div>` : ""}</td>
       <td>${esc(planName(l.plan))}</td>
       <td class="col-expiry">${esc(fmt(l.expires_at))}</td>
       <td><span class="pill ${cls}">${state}</span></td>
