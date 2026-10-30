@@ -16,15 +16,13 @@ Los proyectos originales no se tocaron:
 
 ## Instalar
 
-- **En el televisor, con Downloader** (de AFTVnews): escribe el código **1499497**.
-- **Descarga directa (sin redirecciones, más confiable):**
+- **En el televisor, con Downloader** (de AFTVnews): abre la pestaña **URL** y escribe **giotubeapp**.
+- **Enlace único (siempre baja la última versión):**
+  <https://tinyurl.com/giotubeapp>
+- **Descarga directa de respaldo:**
   <https://c28309208.github.io/giotube-fusion/GioTube-Fusion.apk>
-- **Enlace corto para escribir en Downloader:**
-  <https://tinyurl.com/2y2pfxvh>
 
-El código de AFTVnews a veces se queda en su página de anuncios/consentimiento antes de
-llegar a GitHub; si eso pasa, en Downloader elige **URL** y pega el enlace corto de arriba.
-La página directa de GitHub Pages sirve el mismo APK (mismo SHA-256) sin redirecciones.
+El enlace corto siempre apunta al APK más reciente. No se generan enlaces nuevos por versión.
 
 El código siempre baja la última versión publicada en GitHub
 ([c28309208/giotube-fusion](https://github.com/c28309208/giotube-fusion/releases)).
