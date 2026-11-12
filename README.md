@@ -6,7 +6,7 @@ App nueva para Android TV y celulares que junta en una sola aplicación:
 - **Música**: MusicFlow (biblioteca, reproductor con ecualizador y descargas).
 
 Es un proyecto independiente. **No modifica ni reemplaza** a GioTube ni a MusicFlow:
-tiene su propio paquete (`app.giotube.fusion`), su propia versión (1.0.0) y se instala
+tiene su propio paquete (`app.giotube.fusion`), su propia versión (1.0.32) y se instala
 junto a las otras dos.
 
 Los proyectos originales no se tocaron:
