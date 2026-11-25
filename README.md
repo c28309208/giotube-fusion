@@ -6,7 +6,7 @@ App nueva para Android TV y celulares que junta en una sola aplicación:
 - **Música**: MusicFlow (biblioteca, reproductor con ecualizador y descargas).
 
 Es un proyecto independiente. **No modifica ni reemplaza** a GioTube ni a MusicFlow:
-tiene su propio paquete (`app.giotube.fusion`), su propia versión (1.0.34) y se instala
+tiene su propio paquete (`app.giotube.fusion`), su propia versión (1.0.35) y se instala
 junto a las otras dos.
 
 Los proyectos originales no se tocaron:
@@ -72,5 +72,10 @@ Las dos secciones se comunican por estos archivos:
 - **El análisis de volumen no corre mientras hay audio sonando**, para no quitarle el decodificador
   al reproductor de video. Al volver a Videos, la música se pausa para no pelear por el audio.
 - **La biblioteca del MusicFlow original no se pasa sola**, porque es otra app con otros datos.
+- **El motor de YouTube es NewPipeExtractor 0.27.1.** La 0.26.5 usaba los clientes ANDROID e IOS,
+  y desde noviembre de 2026 YouTube les pide un poToken que ya no se puede generar: contestaba
+  «confirma que no eres un bot» y el video no arrancaba. La 0.27.x usa sólo VISIONOS y WEB.
+  Si algún día vuelve a fallar así, lo primero es revisar
+  <https://github.com/TeamNewPipe/NewPipeExtractor/releases> y subir el número de versión.
 - **El APK pesa unos 62 MB**, mucho más que GioTube, porque trae yt-dlp, Python y ffmpeg
   para 64 y 32 bits.
