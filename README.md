@@ -6,7 +6,7 @@ App nueva para Android TV y celulares que junta en una sola aplicación:
 - **Música**: MusicFlow (biblioteca, reproductor con ecualizador y descargas).
 
 Es un proyecto independiente. **No modifica ni reemplaza** a GioTube ni a MusicFlow:
-tiene su propio paquete (`app.giotube.fusion`), su propia versión (1.0.36) y se instala
+tiene su propio paquete (`app.giotube.fusion`), su propia versión (1.0.37) y se instala
 junto a las otras dos.
 
 Los proyectos originales no se tocaron:
@@ -71,6 +71,12 @@ Las dos secciones se comunican por estos archivos:
   app, al volver a abrirla se recuperan las canciones cuyos audios sigan en el disco.
 - **El análisis de volumen no corre mientras hay audio sonando**, para no quitarle el decodificador
   al reproductor de video. Al volver a Videos, la música se pausa para no pelear por el audio.
+- **El audio que se cortaba a los pocos segundos (1.0.37)**: la app pedía el audio en Opus, que
+  YouTube entrega en WebM **sin índice**. Al fabricar el manifiesto para ExoPlayer, ese «índice»
+  caía sobre el primer bloque de datos, así que el reproductor creía que la pista terminaba ahí:
+  sonaban unos segundos, el video seguía y el audio se quedaba mudo. Ahora se prefiere el AAC
+  (mp4a, que sí trae `sidx`) y, si hay que usar un WebM, se entrega como archivo progresivo en vez
+  de manifiesto DASH. Lo mismo arregla la imagen congelada de los VP9.
 - **La biblioteca del MusicFlow original no se pasa sola**, porque es otra app con otros datos.
 - **El motor de YouTube es NewPipeExtractor 0.27.1.** La 0.26.5 usaba los clientes ANDROID e IOS,
   y desde noviembre de 2026 YouTube les pide un poToken que ya no se puede generar: contestaba
